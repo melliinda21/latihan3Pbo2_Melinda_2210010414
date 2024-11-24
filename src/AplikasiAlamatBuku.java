@@ -5,11 +5,18 @@
  */
 package latihan3pbo2;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -17,14 +24,14 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author ASUS
  */
-public class AplikasiKontak extends javax.swing.JFrame {
+public class AplikasiAlamatBuku extends javax.swing.JFrame {
 
     /**
-     * Creates new form AplikasiKontak
+     * Creates new form AplikasiAlamatBuku
      */
     
     koneksi koneksi;
-    public AplikasiKontak() {
+    public AplikasiAlamatBuku() {
         initComponents();
         koneksi = new koneksi();
         btn_edit.setVisible(false);
@@ -40,9 +47,9 @@ public class AplikasiKontak extends javax.swing.JFrame {
     {
         tblModel.addRow(new Object[]{
                 AllHp.getString("nama"),
-                AllHp.getString("no_telpon"),
-                AllHp.getString("email"),
                 AllHp.getString("alamat"),
+                AllHp.getString("relasi"),
+                AllHp.getString("telpon"),
         });
         }
                 
@@ -63,15 +70,19 @@ public class AplikasiKontak extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        tf_nama = new javax.swing.JTextField();
-        tf_telpon = new javax.swing.JTextField();
-        tf_email = new javax.swing.JTextField();
-        tf_alamat = new javax.swing.JTextField();
+        TF_NAMA = new javax.swing.JTextField();
+        TF_ALAMAT = new javax.swing.JTextField();
+        TF_RELASI = new javax.swing.JTextField();
+        TF_TELPON = new javax.swing.JTextField();
         btn_simpan = new javax.swing.JButton();
         btn_edit = new javax.swing.JButton();
         btn_hapus = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbl_daftar = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -87,17 +98,18 @@ public class AplikasiKontak extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(0, 102, 255));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setText("Daftar Kontak HP");
+        jLabel1.setText("Daftar Alamat Buku");
 
         jLabel2.setText("Nama");
 
-        jLabel3.setText("No. Telpon");
+        jLabel3.setText("Alamat");
 
-        jLabel4.setText("Email");
+        jLabel4.setText("Relasi");
 
-        jLabel5.setText("Alamat");
+        jLabel5.setText("No.Telpon");
 
         btn_simpan.setText("SIMPAN");
         btn_simpan.addActionListener(new java.awt.event.ActionListener() {
@@ -125,7 +137,7 @@ public class AplikasiKontak extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Nama", "No. Telpon", "Email", "Alamat"
+                "Nama", "Alamat", "Relasi", "No.Telpon"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -137,6 +149,24 @@ public class AplikasiKontak extends javax.swing.JFrame {
             }
         });
         jScrollPane2.setViewportView(tbl_daftar);
+
+        jButton1.setText("IMPORT");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("EKSPORT");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane3.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -158,20 +188,28 @@ public class AplikasiKontak extends javax.swing.JFrame {
                                     .addComponent(jLabel5))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(tf_alamat, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                                    .addComponent(tf_telpon, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tf_nama, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tf_email))))
+                                    .addComponent(TF_TELPON, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                                    .addComponent(TF_ALAMAT, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(TF_NAMA, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(TF_RELASI))))
                         .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btn_simpan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btn_edit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_hapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(btn_hapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 15, Short.MAX_VALUE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1))
+                .addGap(46, 46, 46))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,46 +219,52 @@ public class AplikasiKontak extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(tf_nama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TF_NAMA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_simpan))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(tf_telpon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(TF_ALAMAT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(tf_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(TF_RELASI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(36, 36, 36)
                         .addComponent(btn_edit)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(tf_alamat, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TF_TELPON, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_hapus))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(339, 339, 339))
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addGap(373, 373, 373))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_simpanActionPerformed
-        boolean Insert = koneksi.insertHp(tf_nama.getText(), tf_telpon.getText(), tf_email.getText(), tf_alamat.getText());
+        boolean Insert = koneksi.insertHp(TF_NAMA.getText(), TF_TELPON.getText(), TF_RELASI.getText(), TF_ALAMAT.getText());
         if(Insert == true){
             try {
                 refreshTable();
             } catch (SQLException ex) {
-                Logger.getLogger(AplikasiKontak.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AplikasiAlamatBuku.class.getName()).log(Level.SEVERE, null, ex);
             }
-            tf_nama.setText("");
-            tf_telpon.setText("");
-            tf_email.setText("");
-            tf_alamat.setText("");
+            TF_NAMA.setText("");
+            TF_ALAMAT.setText("");
+            TF_RELASI.setText("");
+            TF_TELPON.setText("");
             
             JOptionPane.showMessageDialog(this,"Data berhasil ditambahkan.");
             
@@ -230,38 +274,67 @@ public class AplikasiKontak extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_simpanActionPerformed
 
     private void btn_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editActionPerformed
-        boolean update = koneksi.updatetHp(tf_nama.getText(), tf_telpon.getText(), tf_email.getText(), tf_alamat.getText());
+        boolean update = koneksi.updatetHp(TF_NAMA.getText(), TF_ALAMAT.getText(), TF_RELASI.getText(), TF_TELPON.getText());
         if(update == true){
             try {
                 refreshTable();
             } catch (SQLException ex) {
-                Logger.getLogger(AplikasiKontak.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AplikasiAlamatBuku.class.getName()).log(Level.SEVERE, null, ex);
             }
-            tf_nama.setText("");
-            tf_telpon.setText("");
-            tf_email.setText("");
-            tf_alamat.setText("");
+            TF_NAMA.setText("");
+            TF_ALAMAT.setText("");
+            TF_RELASI.setText("");
+            TF_TELPON.setText("");
             btn_simpan.setVisible(true);
-            btn_edit.setVisible(false);
+            btn_edit.setVisible(true);
             btn_hapus.setVisible(false);
         }
     }//GEN-LAST:event_btn_editActionPerformed
 
     private void btn_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hapusActionPerformed
-        koneksi.hapusHp(tf_nama.getText(), tf_telpon.getText(), tf_email.getText(), tf_alamat.getText());
+        koneksi.hapusHp(TF_NAMA.getText(), TF_ALAMAT.getText(), TF_RELASI.getText(), TF_TELPON.getText());
         try {
             refreshTable();
         } catch (SQLException ex) {
-            Logger.getLogger(AplikasiKontak.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AplikasiAlamatBuku.class.getName()).log(Level.SEVERE, null, ex);
         }
-        tf_nama.setText("");
-            tf_telpon.setText("");
-            tf_email.setText("");
-            tf_alamat.setText("");
+        TF_NAMA.setText("");
+            TF_ALAMAT.setText("");
+            TF_RELASI.setText("");
+            TF_TELPON.setText("");
             btn_simpan.setVisible(true);
-            btn_edit.setVisible(false);
-            btn_hapus.setVisible(false);
+            btn_edit.setVisible(true);
+            btn_hapus.setVisible(true);
     }//GEN-LAST:event_btn_hapusActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        int option = fileChooser.showOpenDialog(AplikasiAlamatBuku.this);
+        if (option == JFileChooser.APPROVE_OPTION){
+            File file = fileChooser.getSelectedFile();
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))){
+            jTextArea1.read(reader, null);
+            JOptionPane.showMessageDialog(AplikasiAlamatBuku.this, "data berhasil di import");
+            }catch (IOException ex){
+                JOptionPane.showMessageDialog(AplikasiAlamatBuku.this,"error saat membaca file!");
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        int option = fileChooser.showSaveDialog(AplikasiAlamatBuku.this);
+        if (option == JFileChooser.APPROVE_OPTION){
+            File file = fileChooser.getSelectedFile();
+            try (BufferedWriter writer = new BufferedWriter (new FileWriter(file))){
+                writer.write(jTextArea1.getText());
+                JOptionPane.showMessageDialog(AplikasiAlamatBuku.this,"Data Berhasil Di Export!" );
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(AplikasiAlamatBuku.this, "Error saat menyimpan file!");
+                Logger.getLogger(AplikasiAlamatBuku.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -280,26 +353,33 @@ public class AplikasiKontak extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AplikasiKontak.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AplikasiAlamatBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AplikasiKontak.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AplikasiAlamatBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AplikasiKontak.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AplikasiAlamatBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AplikasiKontak.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AplikasiAlamatBuku.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new AplikasiKontak().setVisible(true);
+            new AplikasiAlamatBuku().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField TF_ALAMAT;
+    private javax.swing.JTextField TF_NAMA;
+    private javax.swing.JTextField TF_RELASI;
+    private javax.swing.JTextField TF_TELPON;
     private javax.swing.JButton btn_edit;
     private javax.swing.JButton btn_hapus;
     private javax.swing.JButton btn_simpan;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -307,11 +387,9 @@ public class AplikasiKontak extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTable tbl_daftar;
-    private javax.swing.JTextField tf_alamat;
-    private javax.swing.JTextField tf_email;
-    private javax.swing.JTextField tf_nama;
-    private javax.swing.JTextField tf_telpon;
     // End of variables declaration//GEN-END:variables
 }

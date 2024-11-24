@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class koneksi {
     String jdbcDriver = "com.mysql.jdbc.Driver";
-    String dbUrl = "jdbc:mysql://localhost/db_daftarkontak";
+    String dbUrl = "jdbc:mysql://localhost/db_alamatbuku";
     String user = "root";
     String password = "";
     
@@ -47,14 +47,14 @@ public class koneksi {
             Logger.getLogger(koneksi.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public boolean insertHp ( String nama, String no_telpon, String email, String alamat){
-        String query = "Insert into kontak_hp ( nama, no_telpon, email, alamat) values (?, ?, ?, ?)";
+    public boolean insertHp ( String nama, String alamat, String relasi, String telpon){
+        String query = "Insert into alamat_buku ( nama, alamat, relasi, telpon) values (?, ?, ?, ?)";
         try {
             ps = con.prepareStatement(query);
             ps.setString(1, nama); 
-            ps.setString(2, no_telpon);
-            ps.setString(3, email);
-            ps.setString(4, alamat);
+            ps.setString(2, alamat);
+            ps.setString(3, relasi);
+            ps.setString(4, telpon);
             ps.executeUpdate();
             respons = true;
             System.out.println("berhasil insert");
@@ -67,7 +67,7 @@ public class koneksi {
         return respons;
     }
     public ResultSet getAllHp(){
-        String query = "SELECT * FROM kontak_hp";
+        String query = "SELECT * FROM alamat_buku";
         
         try {
             st = con.createStatement();
@@ -78,13 +78,13 @@ public class koneksi {
         return rs;
     }
     
-    public boolean updatetHp (String nama, String no_telpon, String email, String alamat){
-        String query = "update into kontak_hp set no_telpon = ?, email = ?, alamat =? where nama = ?";
+    public boolean updatetHp (String nama, String alamat, String relasi, String telpon){
+        String query = "update into alamat_buku set alamat = ?, relasi = ?, telpon =? where nama = ?";
         try {
             ps = con.prepareStatement(query);
-            ps.setString(1, no_telpon);
-            ps.setString(2, email);
-            ps.setString(3, alamat);
+            ps.setString(1, alamat);
+            ps.setString(2, relasi);
+            ps.setString(3, telpon);
             ps.setString(4, nama);
         } catch (SQLException ex) {
             Logger.getLogger(koneksi.class.getName()).log(Level.SEVERE, null, ex);
@@ -92,8 +92,8 @@ public class koneksi {
         
 return respons;
     }
-    public void hapusHp (String nama, String no_telpon, String email, String alamat){
-        String query = " delete from kontak_hp where nama= ?";
+    public void hapusHp (String nama, String alamat, String relasi, String telpon){
+        String query = " delete from alamat_buku where nama= ?";
         try {
             ps = con.prepareStatement(query);
             ps.setString(1, nama); 
